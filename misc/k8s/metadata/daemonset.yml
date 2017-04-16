@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels: 
+    app: test
+  name: test
+  namespace: test-ns
+
+spec:
+  selector:
+    matchLabels:
+      daemon: test
+  template:
+    metadata:
+      labels:
+        daemon: test
+    spec:
+      containers:
+      - name: test
+        image: echo:v1 
+        ports:
+        - containerPort: 8080
+          name: hello
+          protocol: TCP
