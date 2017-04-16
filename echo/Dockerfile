@@ -1,9 +1,10 @@
 FROM golang:1.8
 
-CMD go get github.com/tools/godep && \
-    godep go build -o echo cmd/main.go
+COPY echo /app/echo
 
 EXPOSE 8080
 
-ENTRYPOINT [./echo, --port, 8080]
+WORKDIR /app
+
+CMD ./echo
 
