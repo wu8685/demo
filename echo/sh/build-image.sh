@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 if [ -z $GOPATH ]; then
     echo "no GOPATH"
