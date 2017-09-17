@@ -21,5 +21,6 @@ func echo(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(400)
 		w.Write([]byte(err.Error()))
 	}
+	log.Printf("handle echo: %s", body.String())
 	w.Write(body.Bytes())
 }

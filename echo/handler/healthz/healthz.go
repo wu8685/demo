@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"demo/echo/server"
+	"log"
 )
 
 func init() {
@@ -11,5 +12,6 @@ func init() {
 }
 
 func healthz(w http.ResponseWriter, r *http.Request) {
+	log.Printf("handle health check")
 	w.Write([]byte("OK"))
 }
