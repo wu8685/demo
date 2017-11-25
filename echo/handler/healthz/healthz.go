@@ -3,7 +3,7 @@ package healthz
 import (
 	"net/http"
 
-	"demo/echo/server"
+	"github.com/wu8685/demo/echo/server"
 	"log"
 )
 

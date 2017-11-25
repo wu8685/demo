@@ -2,14 +2,15 @@ package main
 
 import (
 	"flag"
-	"os"
 	"log"
+	"os"
 
-	"demo/echo/server"
-	"demo/echo/server/config"
+	"github.com/wu8685/demo/echo/server"
+	"github.com/wu8685/demo/echo/server/config"
 
-	_ "demo/echo/handler/echo"
-	_ "demo/echo/handler/healthz"
+	_ "github.com/wu8685/demo/echo/handler/echo"
+	_ "github.com/wu8685/demo/echo/handler/healthz"
+	_ "github.com/wu8685/demo/echo/handler/tail"
 )
 
 func main() {

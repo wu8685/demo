@@ -1,13 +1,13 @@
 package main
 
 import (
-	"time"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
-	timer := 5*time.Second
+	timer := 5 * time.Second
 	log.Printf("Will exit(1) after %v.\n", timer)
 
 	<-time.After(timer)

@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"demo/echo/server"
+	"github.com/wu8685/demo/echo/server"
+	"github.com/wu8685/demo/echo/tools"
 )
 
 func init() {
@@ -22,5 +23,5 @@ func echo(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 	}
 	log.Printf("handle echo: %s", body.String())
-	w.Write(body.Bytes())
+	tools.WriteResponse(w, 200, body, nil)
 }

@@ -3,14 +3,14 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"io"
+	"log"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/grpclog"
 
-	"demo/grpc/hello/proto"
+	"github.com/wu8685/demo/grpc/hello/proto"
 )
 
 var (

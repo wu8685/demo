@@ -1,25 +1,25 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
-	"flag"
-	"net"
 	"log"
+	"net"
 
 	context "golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/grpclog"
 
-	"demo/grpc/hello/proto"
+	"github.com/wu8685/demo/grpc/hello/proto"
 )
 
 var (
-	port = flag.Int("port", 10000, "server port")
-	tls        = flag.Bool("tls", false, "Connection uses TLS if true, else plain TCP")
-	certFile   = flag.String("cert_file", "testdata/server1.pem", "The TLS cert file")
-	keyFile    = flag.String("key_file", "testdata/server1.key", "The TLS key file")
+	port     = flag.Int("port", 10000, "server port")
+	tls      = flag.Bool("tls", false, "Connection uses TLS if true, else plain TCP")
+	certFile = flag.String("cert_file", "testdata/server1.pem", "The TLS cert file")
+	keyFile  = flag.String("key_file", "testdata/server1.key", "The TLS key file")
 )
 
 func main() {
@@ -37,7 +37,7 @@ func newMyServer() *MyServer {
 
 type MyServer struct {
 	grpcServer *grpc.Server
-	persons map[string]*proto.Person
+	persons    map[string]*proto.Person
 }
 
 func (s *MyServer) start(port int) {
@@ -71,6 +71,7 @@ func (s *MyServer) FindPerson(ctx context.Context, p *proto.Person) (*proto.Resu
 		return &proto.Result{true, fmt.Sprintf("name: %s, age: %d", person.Name, person.Age)}, nil
 	}
 }
+
 // type 2: A server-side streaming RPC where the client sends a request to the server
 // and gets a stream to read a sequence of messages back. The client reads from the returned stream
 // until there are no more messages. As you can see in our example,
@@ -81,6 +82,7 @@ func (s *MyServer) ListPersons(_ *proto.Empty, stream proto.PersonManager_ListPe
 	}
 	return nil
 }
+
 // type 3: A client-side streaming RPC where the client writes a sequence of messages
 // and sends them to the server, again using a provided stream.
 // Once the client has finished writing the messages, it waits for the server to read them all
@@ -100,6 +102,7 @@ func (s *MyServer) RecordPerson(stream proto.PersonManager_RecordPersonServer) e
 		s.persons[person.Name] = person
 	}
 }
+
 // type 4: A bidirectional streaming RPC where both sides send a sequence of messages
 // using a read-write stream. The two streams operate independently,
 // so clients and servers can read and write in whatever order they like: for example,
@@ -125,5 +128,3 @@ func (s *MyServer) Chat(stream proto.PersonManager_ChatServer) error {
 		stream.Send(&proto.Result{true, fmt.Sprintf("name: %s, age: %d", person.Name, person.Age)})
 	}
 }
-
-
