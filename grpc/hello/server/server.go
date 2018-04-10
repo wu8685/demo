@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/wu8685/demo/grpc/hello/proto"
+	"google.golang.org/grpc/metadata"
 )
 
 var (
@@ -89,6 +90,11 @@ func (s *MyServer) ListPersons(_ *proto.Empty, stream proto.PersonManager_ListPe
 // and return its response. You specify a client-side streaming method
 // by placing the stream keyword before the request type.
 func (s *MyServer) RecordPerson(stream proto.PersonManager_RecordPersonServer) error {
+	if md, ok := metadata.FromIncomingContext(stream.Context()); ok {
+		if val, exist := md["test-key"]; exist {
+			fmt.Println(val)
+		}
+	}
 	for {
 		person, err := stream.Recv()
 		if err == io.EOF {

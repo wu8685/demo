@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/wu8685/demo/grpc/hello/proto"
+	"google.golang.org/grpc/metadata"
 )
 
 var (
@@ -64,6 +65,7 @@ func main() {
 	findPerson(client)
 }
 
+// Unary RPC
 func findPerson(client proto.PersonManagerClient) {
 	res, err := client.FindPerson(context.Background(), &proto.Person{"Lilei", 18})
 	if err != nil {
@@ -73,6 +75,7 @@ func findPerson(client proto.PersonManagerClient) {
 	log.Printf("find person: %t, message: %s", res.Succ, res.Message)
 }
 
+// Server streaming RPC
 func listPerson(client proto.PersonManagerClient) {
 	stream, err := client.ListPersons(context.Background(), &proto.Empty{})
 	if err != nil {
@@ -92,8 +95,13 @@ func listPerson(client proto.PersonManagerClient) {
 	}
 }
 
+// Client streaming RPC
 func recordPerson(client proto.PersonManagerClient) {
-	stream, err := client.RecordPerson(context.Background())
+	md := metadata.MD{}
+	md["test-key"] = []string{"test-value"}
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	stream, err := client.RecordPerson(ctx, grpc.Header(&md))
 	if err != nil {
 		log.Fatalf("err when call recordPersonL: %s", err.Error())
 	}
@@ -118,6 +126,7 @@ func recordPerson(client proto.PersonManagerClient) {
 	log.Printf("record person: %t, message: %s", result.Succ, result.Message)
 }
 
+// Bidirectional streaming RPC
 func chat(client proto.PersonManagerClient) {
 	stream, err := client.Chat(context.Background())
 	if err != nil {
