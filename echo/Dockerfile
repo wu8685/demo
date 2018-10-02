@@ -1,4 +1,4 @@
-FROM golang:1.8
+FROM centos:7.3.1611 
 
 COPY echo /app/echo
 
