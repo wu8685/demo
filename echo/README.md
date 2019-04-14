@@ -26,6 +26,12 @@ Method: `POST`
 
 Response body:  copy of *Post body* appending with env var `echo`. Responsing with env is supported after 1.1 .
 
+```
+$ curl -X POST http://localhost:8080/echo -d 'test'
+
+body=[test] echo=[]
+```
+
 ## tail
 
 `tail -f` a tmp file for 60 seconds
