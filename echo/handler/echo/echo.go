@@ -2,8 +2,10 @@ package echo
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/wu8685/demo/echo/server"
 	"github.com/wu8685/demo/echo/tools"
@@ -22,6 +24,10 @@ func echo(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(400)
 		w.Write([]byte(err.Error()))
 	}
-	log.Printf("handle echo: %s", body.String())
-	tools.WriteResponse(w, 200, body, nil)
+
+	env := os.Getenv("echo")
+	resp := fmt.Sprintf("%s %s", body.String(), env)
+	log.Printf("handle echo: %s", resp)
+
+	tools.WriteResponse(w, 200, resp, nil)
 }

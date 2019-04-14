@@ -24,7 +24,7 @@ http://<host>:8080/echo
 
 Method: `POST`
 
-Response body:  copy of *Post body*
+Response body:  copy of *Post body* appending with env var `echo`. Responsing with env is supported after 1.1 .
 
 ## tail
 
