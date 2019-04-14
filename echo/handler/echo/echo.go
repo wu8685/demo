@@ -26,7 +26,7 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	env := os.Getenv("echo")
-	resp := fmt.Sprintf("%s %s", body.String(), env)
+	resp := fmt.Sprintf("body=[%s] echo=[%s]", body.String(), env)
 	log.Printf("handle echo: %s", resp)
 
 	tools.WriteResponse(w, 200, resp, nil)
