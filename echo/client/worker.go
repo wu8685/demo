@@ -7,37 +7,49 @@ import (
 	"time"
 )
 
-type record func([]byte)
+type record func(int64, []byte)
+
+type httpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
 
 type worker struct {
+	name      string
 	ratelimit int
-	client    *http.Client
+	client    httpClient
 	recordFn  record
 }
 
 func (w *worker) call(req *http.Request, stop <-chan struct{}) {
 	buff := bytes.Buffer{}
+	ticker := time.NewTicker(1.*time.Second)
+
 	for {
 		count := w.ratelimit
+		failed := 0
+		timestamp := time.Now().UnixNano()/1e6
+	LOOP:
 		for {
 			select {
-			case <-time.After(1 * time.Second):
-				fmt.Printf("timeout\n")
-				break
+			case <-ticker.C:
+				fmt.Printf("%s another loop, request: %d, failed: %d\n", w.name, w.ratelimit - count, failed)
+				break LOOP
 			case <-stop:
-				fmt.Printf("stop\n")
+				fmt.Printf("stop worker %s\n", w.name)
 				return
 			default:
 				if count > 0 {
+					count--
 					resp, err := w.client.Do(req)
 					if err != nil {
 						bodyBuff := bytes.Buffer{}
 						bodyBuff.ReadFrom(req.Body)
-						fmt.Printf("Fail to request %s %s %s: %s\n", req.Method, req.URL, bodyBuff.String(), err)
+						fmt.Printf("%s fails to request %s %s %s: %s\n", w.name, req.Method, req.URL, bodyBuff.String(), err)
+						failed++
 					} else {
 						buff.Reset()
 						buff.ReadFrom(resp.Body)
-						w.recordFn(buff.Bytes())
+						w.recordFn(timestamp, buff.Bytes())
 					}
 				}
 			}
