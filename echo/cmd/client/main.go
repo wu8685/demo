@@ -3,13 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/wu8685/demo/echo/client"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	"github.com/wu8685/demo/echo/client"
 )
 
 var method, url, body string
@@ -56,7 +60,7 @@ func main() {
 	defer logfile.Close()
 
 	// remove the timestamp prefix in logs
-	client.Logger = log.New(logfile, "", log.LstdFlags &^ (log.Ldate | log.Ltime))
+	client.Logger = log.New(logfile, "", log.LstdFlags&^(log.Ldate|log.Ltime))
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -64,8 +68,13 @@ func main() {
 	stop := make(chan struct{})
 	workerStop := client.Start(qps, worker, method, url, body, timeout, stop)
 
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+		http.ListenAndServe(":2112", nil)
+	}()
+
 	sig := <-sigs
-	fmt.Printf("handle signal %s", sig)
+	fmt.Printf("handle signal %s\n", sig)
 	close(stop)
 
 	select {

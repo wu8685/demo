@@ -41,3 +41,13 @@ http://<host>:8080/tail
 ```
 
 Method: `GET`
+
+## metrics
+
+echo record prometheus metrics:
+
+`request_count` to count request record
+
+```shell
+$ curl http://localhost:2112/metrics
+```
